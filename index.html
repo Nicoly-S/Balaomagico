@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Balão Mágico</title>
+<meta name="description" content="Balão Mágico — Crateús, CE. Faça seu pedido pelo WhatsApp.">
+<meta name="theme-color" content="#c9f1e9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --ameixa:#5b3a8c;   /* botão principal, título */
+  --lavanda:#b48fdc;  /* detalhes */
+  --sol:#f3c933;      /* foco, estrela */
+  --ceu:#c9f1e9;      /* topo do céu */
+  --tinta:#2a2433;    /* texto */
+  --nevoa:#6b6079;    /* texto secundário */
+  --linha:#ebe3f5;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh;min-height:100dvh;
+  font-family:'Baloo 2',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--tinta);line-height:1.35;
+  background:linear-gradient(180deg,var(--ceu) 0%,#eaf8f5 36%,#f6f1fb 72%,#efe5fa 100%);
+  background-color:#eef8f5;
+  overflow-x:hidden;
+}
+a{color:inherit;-webkit-tap-highlight-color:transparent}
+a:focus-visible{outline:3px solid var(--sol);outline-offset:3px}
+
+.ceu{position:fixed;inset:0;pointer-events:none;z-index:0}
+.nuvem{position:absolute;fill:#fff}
+.n1{width:150px;top:7%;left:-34px;opacity:.9}
+.n2{width:110px;top:21%;right:-22px;opacity:.75}
+.n3{width:190px;bottom:9%;left:-60px;opacity:.55}
+
+main{position:relative;z-index:1;max-width:440px;margin:0 auto;padding:36px 16px 28px}
+
+.topo{text-align:center}
+.balao{width:188px;height:188px;margin:0 auto;display:block;
+  filter:drop-shadow(0 18px 22px rgba(91,58,140,.22));
+  animation:sobe 1.1s cubic-bezier(.2,.9,.3,1.1) both, flutua 6s ease-in-out 1.1s infinite}
+.bm-logo{width:100%;height:100%;display:block}
+@keyframes sobe{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+h1{margin:18px 0 0;font-size:34px;line-height:1.05;font-weight:800;color:var(--ameixa);letter-spacing:-.01em}
+.frase{margin:6px 0 0;font-size:18px;font-weight:500;color:var(--nevoa)}
+
+.pedido{display:flex;align-items:center;gap:14px;margin-top:28px;padding:16px 18px;border-radius:20px;
+  background:var(--ameixa);color:#fff;text-decoration:none;
+  box-shadow:0 14px 26px -14px rgba(91,58,140,.8);transition:transform .12s ease,background .15s ease}
+.pedido:active{transform:scale(.98)}
+@media (hover:hover){.pedido:hover{background:#6a47a0}}
+.pedido .ic{flex:0 0 48px;height:48px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.pedido .ic svg{width:30px;height:30px}
+.pedido strong{display:block;font-size:19px;font-weight:700;line-height:1.15}
+.pedido small{display:block;font-size:14px;opacity:.85;margin-top:2px}
+
+.painel{margin-top:16px;border-radius:24px;background:rgba(255,255,255,.84);
+  box-shadow:0 12px 30px -20px rgba(75,46,107,.5),inset 0 0 0 1px rgba(255,255,255,.95);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);overflow:hidden}
+.item{display:flex;align-items:center;gap:14px;padding:15px 18px;text-decoration:none;transition:background .12s ease}
+.item+.item{border-top:1px solid var(--linha)}
+.item:active{background:#f4eefb}
+@media (hover:hover){.item:hover{background:#f8f4fd}}
+.item svg{flex:0 0 26px;width:26px;height:26px}
+.item span{flex:1;min-width:0}
+.item strong{display:block;font-size:17px;font-weight:700}
+.item small{display:block;font-size:14px;color:var(--nevoa);margin-top:1px}
+
+footer{margin-top:30px;text-align:center;font-size:14px;color:var(--nevoa)}
+
+.bolinha{position:absolute;display:block;border-radius:50%;opacity:.6;animation:boia 9s ease-in-out infinite}
+.bolinha.q{border-radius:5px;transform:rotate(45deg)}
+@keyframes boia{0%,100%{translate:0 0}50%{translate:0 -18px}}
+.estrela{position:fixed;left:0;top:0;z-index:50;pointer-events:none;line-height:1;font-size:var(--t);color:var(--c);
+  text-shadow:0 0 8px var(--c),0 0 2px rgba(42,36,51,.35);animation:brilha 1.1s ease-out forwards;will-change:transform,opacity}
+@keyframes brilha{
+  0%{transform:translate(var(--x),var(--y)) translate(-50%,-50%) scale(1) rotate(0);opacity:1}
+  100%{transform:translate(calc(var(--x) + var(--dx)),calc(var(--y) + var(--dy))) translate(-50%,-50%) scale(.2) rotate(140deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.bolinha{animation:none}.balao{animation:none}.pedido,.item{transition:none}}
+</style>
+</head>
+<body>
+<!--
+  Para editar: troque os textos e links direto no HTML abaixo.
+  WhatsApp: o número fica no link wa.me/55DDDNUMERO (só números).
+-->
+<div class="ceu" aria-hidden="true">
+  <span class="bolinha" style="left:8%;top:14%;width:22px;height:22px;background:#b48fdc;animation-delay:-0.0s"></span>
+  <span class="bolinha" style="left:88%;top:10%;width:12px;height:12px;background:#f3c933;animation-delay:-1.3s"></span>
+  <span class="bolinha q" style="left:10%;top:52%;width:14px;height:14px;background:#8fdcc9;animation-delay:-2.6s"></span>
+  <span class="bolinha q" style="left:90%;top:38%;width:20px;height:20px;background:#b48fdc;animation-delay:-3.9s"></span>
+  <span class="bolinha" style="left:84%;top:74%;width:16px;height:16px;background:#8fdcc9;animation-delay:-5.2s"></span>
+  <span class="bolinha" style="left:6%;top:86%;width:11px;height:11px;background:#f3c933;animation-delay:-6.5s"></span>
+  <span class="bolinha q" style="left:52%;top:95%;width:9px;height:9px;background:#f3c933;animation-delay:-7.8s"></span>
+  <span class="bolinha" style="left:70%;top:26%;width:8px;height:8px;background:#f6b0c8;animation-delay:-9.1s"></span>
+  <span class="bolinha" style="left:28%;top:68%;width:9px;height:9px;background:#f6b0c8;animation-delay:-10.4s"></span>
+  <svg class="nuvem n1" viewBox="0 0 120 50"><path d="M18 44a16 16 0 0 1 2-32 22 22 0 0 1 40-4 18 18 0 0 1 30 8 14 14 0 0 1 12 28z"/></svg>
+  <svg class="nuvem n2" viewBox="0 0 120 50"><path d="M18 44a16 16 0 0 1 2-32 22 22 0 0 1 40-4 18 18 0 0 1 30 8 14 14 0 0 1 12 28z"/></svg>
+  <svg class="nuvem n3" viewBox="0 0 120 50"><path d="M18 44a16 16 0 0 1 2-32 22 22 0 0 1 40-4 18 18 0 0 1 30 8 14 14 0 0 1 12 28z"/></svg>
+</div>
+
+<main>
+  <header class="topo">
+    <div class="balao"><svg class="bm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Balão Mágico">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fe9dc"/><stop offset=".75" stop-color="#e9faf6"/><stop offset="1" stop-color="#ffffff"/></linearGradient>
+ <clipPath id="env"><path d="M200 92 C 258 92, 292 130, 290 170 C 288 206, 246 240, 214 262 L 186 262 C 154 240, 112 206, 110 170 C 108 130, 142 92, 200 92 Z"/></clipPath>
+ <path id="ring" d="M200 200 m-160 0 a160 160 0 1 1 320 0 a160 160 0 1 1 -320 0"/>
+</defs>
+<circle cx="200" cy="200" r="200" fill="#fff"/>
+<circle cx="200" cy="200" r="126" fill="url(#bg)"/>
+<text font-family="Nunito,'Arial Black',Arial,sans-serif" font-weight="900" font-size="31" fill="#2a2433">
+ <textPath href="#ring" textLength="1000" lengthAdjust="spacing">BALÃO MÁGICO • BALÃO MÁGICO • BALÃO MÁGICO •</textPath>
+</text>
+<circle cx="118" cy="212" r="7" fill="#c7a6e6"/><circle cx="292" cy="250" r="10" fill="#c7a6e6"/><circle cx="268" cy="108" r="4" fill="#c7a6e6"/><circle cx="160" cy="280" r="3.5" fill="#c7a6e6"/>
+<g clip-path="url(#env)">
+ <rect x="100" y="80" width="100" height="200" fill="#f8d3df"/><rect x="200" y="80" width="100" height="200" fill="#d2bdf0"/>
+ <path d="M200 92 C 128 118, 128 228, 194 262 L 206 262 C 272 228, 272 118, 200 92 Z" fill="#cfe7f7"/><rect x="200" y="80" width="100" height="200" fill="#d3e8b8" clip-path="url(#rh)"/>
+</g>
+<clipPath id="rh"><path d="M200 92 C 128 118, 128 228, 194 262 L 206 262 C 272 228, 272 118, 200 92 Z"/></clipPath>
+<path d="M200 92 C 128 118, 128 228, 194 262 L 206 262 C 272 228, 272 118, 200 92 Z" fill="#cfe7f7" clip-path="url(#lh)"/>
+<clipPath id="lh"><rect x="100" y="80" width="100" height="200"/></clipPath>
+<path d="M200 92 C 128 118, 128 228, 194 262 L 206 262 C 272 228, 272 118, 200 92 Z" fill="#d3e8b8" clip-path="url(#rhh)"/>
+<clipPath id="rhh"><rect x="200" y="80" width="100" height="200"/></clipPath>
+<path d="M200 92 C 166 118, 166 228, 194 262 L 206 262 C 234 228, 234 118, 200 92 Z" fill="#fcf4b5"/>
+<g fill="none" stroke="#2a2433" stroke-width="4.5" stroke-linejoin="round">
+ <path d="M200 92 C 128 118, 128 228, 194 262 L 206 262 C 272 228, 272 118, 200 92 Z"/><path d="M200 92 C 166 118, 166 228, 194 262 L 206 262 C 234 228, 234 118, 200 92 Z"/><path d="M200 92 C 258 92, 292 130, 290 170 C 288 206, 246 240, 214 262 L 186 262 C 154 240, 112 206, 110 170 C 108 130, 142 92, 200 92 Z"/>
+ <path d="M188 262 L184 284 M212 262 L216 284" stroke-width="3.5"/>
+</g>
+<path d="M178 284 H222 L217 316 H183 Z" fill="#ef9a3c" stroke="#2a2433" stroke-width="4" stroke-linejoin="round"/>
+<path d="M176 283 H224 V292 H176 Z" fill="#f6b25a" stroke="#2a2433" stroke-width="4" stroke-linejoin="round"/>
+<text x="200" y="192" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-weight="700" font-size="46" fill="#c39be6" stroke="#2a2433" stroke-width="1.6" paint-order="stroke">BM</text>
+<polygon points="149.0,95.3 151.4,106.8 162.8,109.6 152.6,115.5 153.5,127.3 144.7,119.4 133.8,123.8 138.6,113.0 131.0,104.0 142.7,105.3" fill="#f3c933" stroke="#2a2433" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="271.8,158.4 280.6,172.6 297.2,170.7 286.4,183.5 293.3,198.7 277.8,192.3 265.5,203.6 266.7,186.9 252.2,178.7 268.4,174.7" fill="#f3c933" stroke="#2a2433" stroke-width="3.5" stroke-linejoin="round"/>
+<polygon points="150.0,241.0 152.9,248.0 160.5,248.6 154.8,253.5 156.5,260.9 150.0,257.0 143.5,260.9 145.2,253.5 139.5,248.6 147.1,248.0" fill="#f3c933" stroke="#2a2433" stroke-width="2.5" stroke-linejoin="round"/>
+<polygon points="124.0,184.0 126.8,195.2 138.0,198.0 126.8,200.8 124.0,212.0 121.2,200.8 110.0,198.0 121.2,195.2" fill="#cfe7b0" stroke="#2a2433" stroke-width="2" stroke-linejoin="round"/>
+<polygon points="256.0,235.0 258.5,243.5 267.0,246.0 258.5,248.5 256.0,257.0 253.5,248.5 245.0,246.0 253.5,243.5" fill="#cfe7b0" stroke="#2a2433" stroke-width="2" stroke-linejoin="round"/>
+<polygon points="250.0,110.0 251.8,116.2 258.0,118.0 251.8,119.8 250.0,126.0 248.2,119.8 242.0,118.0 248.2,116.2" fill="#fff" stroke="#2a2433" stroke-width="1.6" stroke-linejoin="round"/>
+<polygon points="132.0,146.0 133.8,152.2 140.0,154.0 133.8,155.8 132.0,162.0 130.2,155.8 124.0,154.0 130.2,152.2" fill="#fff" stroke="#2a2433" stroke-width="1.6" stroke-linejoin="round"/>
+</svg></div>
+    <h1>Balão Mágico</h1>
+    <p class="frase">Você merece momentos mágicos!</p>
+  </header>
+
+  <a class="pedido" href="https://wa.me/5588921592270?text=Oi!%20Vim%20pelo%20Instagram%20e%20quero%20fazer%20um%20pedido%20%F0%9F%98%8A" target="_blank" rel="noopener">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M8.6 7.2c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .6l-.5.7c-.1.2-.2.3 0 .6.4.7 1 1.4 1.6 1.9.7.6 1.3.9 1.6 1 .2.1.4.1.5-.1l.7-.9c.2-.2.4-.2.6-.1l1.8.9c.3.1.4.2.4.4 0 .3 0 1.1-.6 1.6-.5.5-1.4.8-2 .8-1 0-2.4-.5-3.9-1.7-1.6-1.3-2.6-2.9-2.9-3.6-.4-.8-.4-2.3.4-3.1z"/></svg></span>
+    <span><strong>Fazer pedido no WhatsApp</strong><small>Fale com a gente agora</small></span>
+  </a>
+
+  <nav class="painel" aria-label="Mais links">
+    <a class="item" href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Dr.+Moreira+da+Rocha%2C+664%2C+Centro%2C+Crate%C3%BAs+-+CE%2C+63700-088" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#5b3a8c" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.6A2.6 2.6 0 1 1 12 6.4a2.6 2.6 0 0 1 0 5.2z"/></svg>
+      <span><strong>Como chegar</strong><small>Rua Dr. Moreira da Rocha, 664, Centro</small></span>
+    </a>
+    <a class="item" href="https://share.google/MRuQopyGHJsrnaDgq" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1a10 10 0 0 0 0 9.2L6.4 14z"/><path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10C7.2 7.7 9.4 6 12 6z"/></svg>
+      <span><strong>Avaliar no Google</strong><small>Sua opinião ajuda muito a gente</small></span>
+    </a>
+    <a class="item" href="https://www.instagram.com/balaomagicocrateus/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#d6249f" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="#d6249f" stroke="none"/></svg>
+      <span><strong>Seguir no Instagram</strong><small>@balaomagicocrateus</small></span>
+    </a>
+  </nav>
+
+  <footer>Balão Mágico, Crateús – CE</footer>
+</main>
+<script>
+/* Rastro de estrelas seguindo o mouse (e o dedo no celular) */
+(function () {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cores = ['#f3c933', '#f3c933', '#b48fdc', '#4fc7b5', '#f08bb0'];
+  var formas = ['\u2726', '\u2605', '\u2727'];
+  var ultimo = null, vivas = 0;
+  function estrela(x, y) {
+    if (vivas > 40) return;
+    var e = document.createElement('span');
+    e.className = 'estrela';
+    e.setAttribute('aria-hidden', 'true');
+    e.textContent = formas[Math.random() * formas.length | 0];
+    e.style.setProperty('--x', x + 'px');
+    e.style.setProperty('--y', y + 'px');
+    e.style.setProperty('--dx', (Math.random() * 30 - 15) + 'px');
+    e.style.setProperty('--dy', (Math.random() * 26 + 10) + 'px');
+    e.style.setProperty('--t', (16 + Math.random() * 12) + 'px');
+    e.style.setProperty('--c', cores[Math.random() * cores.length | 0]);
+    vivas++;
+    e.addEventListener('animationend', function () { e.remove(); vivas--; });
+    document.body.appendChild(e);
+  }
+  window.addEventListener('pointermove', function (ev) {
+    var x = ev.clientX, y = ev.clientY;
+    if (ultimo && Math.hypot(x - ultimo[0], y - ultimo[1]) < 12) return;
+    ultimo = [x, y];
+    estrela(x, y);
+  }, { passive: true });
+  window.addEventListener('pointerdown', function (ev) {
+    for (var i = 0; i < 6; i++) estrela(ev.clientX, ev.clientY);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
